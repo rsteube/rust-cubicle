@@ -1,0 +1,8 @@
+version: '3'
+
+services:
+  rust-cubicle:
+    build: .
+    image: rsteube/rust-cubicle:nightly
+    ports:
+      - '8443:8443'

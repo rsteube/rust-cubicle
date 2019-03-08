@@ -1,0 +1,14 @@
+#!/bin/sh
+set -x
+
+extension="$(basename ${1%.vsix})"
+
+mkdir -p /home/rust/.code-server/extensions \
+         /tmp/vsix-add/
+cp "$1" "/tmp/vsix-add/${extension}.zip"
+cd /tmp/vsix-add/
+unzip "${extension}.zip" 'extension/*'
+mv extension /home/rust/.code-server/extensions/${extension}
+rm -r /tmp/vsix-add/
+
+
