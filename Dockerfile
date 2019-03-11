@@ -26,12 +26,12 @@ RUN cargo install cargo-add
 RUN rustup component add rls rust-analysis rust-src
 
 ADD vsix-add \
- && ext \
- && rls-build /usr/local/bin/
+    ext \
+    rls-build /usr/local/bin/
 
 RUN ext install rust-lang.rust 0.5.3
 
-ENV CARGO_TARGET_DIR=/home/rust/targetcache
+ENV CARGO_TARGET_DIR=/home/rust/target
 
 ENTRYPOINT code-server
 
@@ -43,8 +43,3 @@ ONBUILD ADD Cargo.lock Cargo.toml ./
 ONBUILD RUN cargo build
 ONBUILD RUN cargo build --tests
 ONBUILD RUN rls-build
-
-
-
-
-
