@@ -1,6 +1,6 @@
 FROM codercom/code-server
 
-FROM ekidd/rust-musl-builder:nightly
+FROM ekidd/rust-musl-builder:nightly as cubicle
 
 COPY --from=0 /usr/local/bin/code-server /usr/local/bin/
 
@@ -33,6 +33,10 @@ RUN ext install rust-lang.rust 0.5.3
 
 ENV CARGO_TARGET_DIR=/home/rust/targetcache
 
+ENTRYPOINT code-server
+
+FROM cubicle as cubicle-onbuild
+
 ONBUILD RUN mkdir src && touch src/lib.rs && echo 'fn main() {}' > src/main.rs
 
 ONBUILD ADD Cargo.lock Cargo.toml ./
@@ -40,7 +44,6 @@ ONBUILD RUN cargo build
 ONBUILD RUN cargo build --tests
 ONBUILD RUN rls-build
 
-ENTRYPOINT code-server
 
 
 
