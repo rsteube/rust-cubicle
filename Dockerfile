@@ -33,7 +33,7 @@ RUN ext install rust-lang.rust 0.5.3
 
 ENV CARGO_TARGET_DIR=/home/rust/target
 
-ENTRYPOINT code-server
+CMD code-server
 
 FROM cubicle as cubicle-onbuild
 
