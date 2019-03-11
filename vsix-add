@@ -5,7 +5,6 @@ extension="$(basename ${1%.vsix})"
 
 mkdir -p /home/rust/.code-server/extensions \
          /tmp/vsix-add/
-ls -lha
 
 unzip "$1" 'extension/*' -d /tmp/vsix-add
 mv /tmp/vsix-add/extension /home/rust/.code-server/extensions/${extension}
