@@ -25,9 +25,10 @@ RUN cargo install cargo-add
 RUN rustup component add rls rust-analysis rust-src
 
 ADD vsix-add /usr/local/bin/
+ADD ext /usr/local/bin/
 RUN sudo apt-get install -y unzip
-ADD extensions/rust-lang.rust-0.5.3.vsix /home/rust/extensions/
-RUN vsix-add /home/rust/extensions/rust-lang.rust-0.5.3.vsix
+
+RUN ext install rust-lang.rust 0.5.3
 
 
 ADD rls-build /usr/local/bin/
