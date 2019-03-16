@@ -1,6 +1,6 @@
 FROM codercom/code-server
 
-FROM ekidd/rust-musl-builder:nightly as cubicle
+FROM ekidd/rust-musl-builder:nightly-2019-02-08 as cubicle
 
 COPY --from=0 /usr/local/bin/code-server /usr/local/bin/
 
