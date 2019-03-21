@@ -1,6 +1,6 @@
 FROM codercom/code-server
 
-FROM ekidd/rust-musl-builder:nightly as cubicle
+FROM ekidd/rust-musl-builder:nightly-2019-02-08 as cubicle
 
 COPY --from=0 /usr/local/bin/code-server /usr/local/bin/
 
@@ -39,7 +39,7 @@ FROM cubicle as cubicle-onbuild
 
 ONBUILD RUN mkdir src && touch src/lib.rs && echo 'fn main() {}' > src/main.rs
 
-ONBUILD ADD Cargo.lock Cargo.toml ./
+ONBUILD ADD --chown=rust:rust Cargo.lock Cargo.toml ./
 ONBUILD RUN cargo build
 ONBUILD RUN cargo build --tests
 ONBUILD RUN rls-build
