@@ -21,6 +21,7 @@ RUN apt-get install -y software-properties-common \
 
 USER rust
 
+RUN rustup update nightly
 RUN cargo install cargo-watch
 RUN cargo install cargo-add
 RUN rustup component add rls rust-analysis rust-src
