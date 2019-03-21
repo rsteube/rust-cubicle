@@ -39,7 +39,7 @@ FROM cubicle as cubicle-onbuild
 
 ONBUILD RUN mkdir src && touch src/lib.rs && echo 'fn main() {}' > src/main.rs
 
-ONBUILD ADD Cargo.lock Cargo.toml ./
+ONBUILD ADD --chown=rust:rust Cargo.lock Cargo.toml ./
 ONBUILD RUN cargo build
 ONBUILD RUN cargo build --tests
 ONBUILD RUN rls-build
