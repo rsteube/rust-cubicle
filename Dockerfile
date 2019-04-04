@@ -1,30 +1,28 @@
 FROM codercom/code-server
 
-FROM ekidd/rust-musl-builder:nightly-2019-02-08 as cubicle
-
-COPY --from=0 /usr/local/bin/code-server /usr/local/bin/
-
 USER root
 
 RUN apt-get update \
+ && export DEBIAN_FRONTEND=noninteractive \
  && apt-get install -y expect \
-                       net-tools \
-                       openssl \
-                       unzip
+                       unzip \
+                       curl \
+                       gcc \
+                       libssl-dev \
+                       musl-dev \
+                       pkg-config
+ 
+RUN curl https://sh.rustup.rs -sSf | sh -s -- -y
+ENV PATH /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/root/.cargo/bin/
+ENV TARGET x86_64-unknown-linux-musl
 
-# upgrade libstdc++6 since code-server was build in ubuntu 18.10 and rust-musl-builder uses 16.04
-RUN apt-get install -y software-properties-common \
- && add-apt-repository ppa:ubuntu-toolchain-r/test \
- && apt-get update \
- && apt-get install -y gcc-4.9 \
- && apt-get upgrade -y libstdc++6
+RUN rustup default nightly
+RUN rustup target add x86_64-unknown-linux-musl --toolchain=nightly
+ENV HOST x86_64-unknown-linux-musl
 
-USER rust
-
-RUN rustup update nightly
 RUN cargo install cargo-watch
 RUN cargo install cargo-add
-RUN rustup component add rls rust-analysis rust-src
+RUN rustup component add --toolchain stable rls rust-analysis rust-src
 
 ADD vsix-add \
     ext \
@@ -32,15 +30,11 @@ ADD vsix-add \
 
 RUN ext install rust-lang.rust 0.5.3
 
-ENV CARGO_TARGET_DIR=/home/rust/target
-
-CMD code-server
-
-FROM cubicle as cubicle-onbuild
+ENV CARGO_TARGET_DIR=/root/target
 
 ONBUILD RUN mkdir src && touch src/lib.rs && echo 'fn main() {}' > src/main.rs
 
-ONBUILD ADD --chown=rust:rust Cargo.lock Cargo.toml ./
+ONBUILD ADD Cargo.lock Cargo.toml ./
 ONBUILD RUN cargo build
 ONBUILD RUN cargo build --tests
 ONBUILD RUN rls-build
